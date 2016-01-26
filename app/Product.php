@@ -12,6 +12,10 @@ class Product extends Model
     		'id',
     		'updated_at',
     		'created_at'
-    ];    
+    ];
+    
+    public function variants() {
+    	return $this->hasMany('App\Variant', 'parent_sku', 'sku');
+    }
     
 }
