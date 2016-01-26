@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 /*
 |--------------------------------------------------------------------------
@@ -27,5 +27,15 @@ Route::get('/', function () {
 */
 
 Route::group(['middleware' => ['web']], function () {
-    //
+	Route::get('/', function () {
+		return view('welcome');
+	});	
+	
+	Route::auth();	
 });
+
+Route::group(['prefix' => 'api/v1/'], function () {
+	Route::resource('products', 'ProductsController', ['except' => ['create', 'edit']]);
+	Route::resource('channels', 'ChannelsController', ['except' => ['create', 'edit']]);	
+});
+	
