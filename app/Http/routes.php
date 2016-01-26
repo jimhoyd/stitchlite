@@ -39,8 +39,6 @@ Route::group(['prefix' => 'api/v1/'], function () {
 	
 	Route::resource('channels', 'ChannelsController', ['except' => ['create', 'edit']]);
 	
-	Route::get('sync', function() {
-		return 'sync placeholder';
-	});
+	Route::get('sync', 'ChannelsController@sync');
 });
 	

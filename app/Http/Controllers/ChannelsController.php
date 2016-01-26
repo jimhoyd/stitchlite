@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
 use App\Channel;
 
+use GuzzleHttp\Client;
+
 use Validator;
+
 
 class ChannelsController extends Controller
 {
@@ -118,5 +120,9 @@ class ChannelsController extends Controller
     	$channel->delete();
     	    	
     	return response()->json(['message'=>"Channel id:{$id} has been deleted", 'code'=>200], 200);
+    }
+    
+    public function sync() {
+    	
     }
 }

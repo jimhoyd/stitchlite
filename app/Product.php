@@ -18,4 +18,7 @@ class Product extends Model
     	return $this->hasMany('App\Variant', 'parent_sku', 'sku');
     }
     
+    public function channel() {
+    	 
+    }    
 }
