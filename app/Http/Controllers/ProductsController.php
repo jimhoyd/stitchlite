@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Product;
+
+use Validator;
+
 class ProductsController extends Controller
 {
     /**
@@ -14,19 +18,18 @@ class ProductsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+    	$limit = $request->get('limit', 10);
+    	
+//     	$products = Cache::remember('products', 15/60, function() use($limit) {
+//     		return Product::orderBy('created_at', 'desc')->paginate($limit);
+// 			return Product::all();
+//     	});
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    	$products = Product::orderBy('created_at', 'desc')->paginate($limit);
+    	
+    	return response()->json(array_merge($products->toArray(), ['code'=> 200]), 200);
     }
 
     /**
@@ -37,7 +40,26 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+		$validator = Validator::make($request->all(), [
+	        'name' => 'required|max:255',
+			'sku' => 'required|max:60',
+			'quantity' => 'required|integer',				
+			'price' => 'required|numeric',
+	    ]);
+	
+	    if ($validator->fails()) {
+			return response()->json(['message'=>$validator->errors(), 'code'=>422], 422);
+	    }
+    	
+        // create new product
+        $product = Product::create([
+        	"name" => $request->name,
+        	"sku" => $request->sku,
+        	"stock" => $request->stock,        	
+        	"price" => $request->price,
+        ]);
+       
+       return response()->json(['message'=>"Product {$request->name} has been created", 'data'=>$product, 'code'=>201], 201);
     }
 
     /**
@@ -46,20 +68,14 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($sku)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $product = Product::where('sku', '=', $sku)->limit(1)->first();        
+        if(!$product) {
+        	return response()->json(['message'=>"Unable to find product by sku:{$sku}", 'code'=>404], 404);
+        }
+        
+    	return response()->json(['data'=>$product, 'code'=>200], 200);
     }
 
     /**
@@ -69,9 +85,33 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $sku)
     {
-        //
+        // edit
+    	$product = Product::where('sku', '=', $sku)->limit(1)->first();
+    	if(!$product) {
+    		return response()->json(['message'=>"Unable to find product by sku:{$sku}", 'code'=>404], 404);
+    	}        
+    	    	
+    	$validator = Validator::make($request->all(), [
+	        'name' => 'required|max:255',
+			'sku' => 'required|max:60',
+			'quantity' => 'required|integer',				
+			'price' => 'required|numeric',   			
+    	]);
+    	
+    	if ($validator->fails()) {
+    		return response()->json(['message'=>$validator->errors(), 'code'=>422], 422);
+    	}
+    	 
+    	$product->update([
+        	"name" => $request->name,
+        	"sku" => $request->sku,
+        	"stock" => $request->stock,        	
+        	"price" => $request->price,
+        ]);
+    	 
+    	return response()->json(['message'=>"Product sku:{$sku} has been updated", 'data'=>$product, 'code'=>200], 200); 
     }
 
     /**
@@ -80,8 +120,16 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($sku)
     {
-        //
+        // delete
+    	$product = Product::where('sku', '=', $sku)->limit(1)->first();
+    	if(!$product) {
+    		return response()->json(['message'=>"Unable to find product by sku:{$sku}", 'code'=>404], 404);
+    	}
+    	
+    	$product->delete();
+    	    	
+    	return response()->json(['message'=>"Product sku:{sku} has been deleted", 'code'=>200], 200);
     }
 }

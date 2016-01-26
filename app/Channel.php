@@ -7,4 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Channel extends Model
 {
     protected $fillable = ['name'];
+    
+    protected $hidden = [
+   		'updated_at',
+   		'created_at'
+    ];    
 }
