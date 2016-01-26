@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Channel;
+
+use Validator;
+
 class ChannelsController extends Controller
 {
     /**
@@ -14,9 +18,18 @@ class ChannelsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+    	$limit = $request->get('limit', 10);
+    	
+//     	$channels = Cache::remember('channels', 15/60, function() use($limit) {
+//     		return Channel::orderBy('created_at', 'desc')->paginate($limit);
+// 			return Channel::all();
+//     	});
+
+    	$channels = Channel::orderBy('created_at', 'desc')->paginate($limit);
+    	
+    	return response()->json(array_merge($channels->toArray(), ['code'=> 200]), 200);
     }
 
     /**
@@ -27,7 +40,20 @@ class ChannelsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+		$validator = Validator::make($request->all(), [
+	        'name' => 'required|max:255'
+	    ]);
+	
+	    if ($validator->fails()) {
+			return response()->json(['message'=>$validator->errors(), 'code'=>422], 422);
+	    }
+    	
+        // create new channel
+        $channel = Channel::create([
+        	"name" => $request->name,
+        ]);
+       
+       return response()->json(['message'=>"Channel {$request->name} has been created", 'data'=>$channel, 'code'=>201], 201);
     }
 
     /**
@@ -38,7 +64,12 @@ class ChannelsController extends Controller
      */
     public function show($id)
     {
-        //
+        $channel = Channel::find($id);        
+        if(!$channel) {
+        	return response()->json(['message'=>"Unable to find channel by id:{$id}", 'code'=>404], 404);
+        }
+        
+    	return response()->json(['data'=>$channel, 'code'=>200], 200);
     }
 
     /**
@@ -50,7 +81,24 @@ class ChannelsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $channel = Channel::find($id);        
+        if(!$channel) {
+        	return response()->json(['message'=>"Unable to find channel by id:{$id}", 'code'=>404], 404);
+        }    
+    	    	
+    	$validator = Validator::make($request->all(), [
+	        'name' => 'required|max:255'
+	    ]);
+	
+	    if ($validator->fails()) {
+			return response()->json(['message'=>$validator->errors(), 'code'=>422], 422);
+	    }
+    	 
+    	$channel->update([
+        	"name" => $request->name,
+        ]);
+    	 
+    	return response()->json(['message'=>"Channel id:{$id} has been updated", 'data'=>$channel, 'code'=>200], 200); 
     }
 
     /**
@@ -61,6 +109,14 @@ class ChannelsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // delete
+    	$channel = Channel::find($id);
+    	if(!$channel) {
+    		return response()->json(['message'=>"Unable to find channel by id:{$id}", 'code'=>404], 404);
+    	}
+    	
+    	$channel->delete();
+    	    	
+    	return response()->json(['message'=>"Channel id:{$id} has been deleted", 'code'=>200], 200);
     }
 }

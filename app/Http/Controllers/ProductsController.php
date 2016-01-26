@@ -130,6 +130,6 @@ class ProductsController extends Controller
     	
     	$product->delete();
     	    	
-    	return response()->json(['message'=>"Product sku:{sku} has been deleted", 'code'=>200], 200);
+    	return response()->json(['message'=>"Product sku:{$sku} has been deleted", 'code'=>200], 200);
     }
 }
