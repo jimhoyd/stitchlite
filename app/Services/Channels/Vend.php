@@ -2,6 +2,8 @@
 
 namespace App\Services\Channels;
 
+// refactor this class to only loop thru once, leveraging the products() and variants()
+
 class Vend extends Sync {
 
 	public function nomalizeData($data) {
@@ -25,9 +27,7 @@ class Vend extends Sync {
     		'name' => $data['name'],
     		'sku' => $data['sku'],
     		'price' => (float) $data['price'],
-    		'quantity' => (int) array_reduce($data['inventory'], function($total, $item) {
-    			return $total+$item['count'];
-    		}, 0)
+    		'quantity' => $this->getTotalInventory($data['inventory'])
     	];
 	}
 	
@@ -36,10 +36,14 @@ class Vend extends Sync {
     		'name' => $data['name'],
     		'sku' =>  $data['sku'],
     		'price' => (float) $data['price'],
-    		'quantity' =>  (int) array_reduce($data['inventory'], function($total, $item) {
-    			return $total+$item['count'];
-    		}, 0)
+    		'quantity' => $this->getTotalInventory($data['inventory'])
     	];
+	}
+	
+	private function getTotalInventory($data) {
+		return (int) array_reduce($data, function($total, $item) {
+    		return $total+$item['count'];
+    	}, 0);	
 	}
 	
 }

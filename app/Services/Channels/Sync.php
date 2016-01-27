@@ -31,6 +31,7 @@ abstract class Sync implements SyncInterface {
 		$this->client = new Client();
 	}
 	
+	//refactor this code to use structured data from channels table 
 	public function fetchData() {
 		$response = $this->client->request('GET', $this->url);
 		return json_decode($response->getBody(), true);
