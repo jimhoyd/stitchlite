@@ -19,7 +19,7 @@ class Variant extends Model
     	return $this->belongsTo('App\Product');
     }
     
-    public function channel() {
-    	
+    public function channels() {
+    	return $this->belongsToMany('App\Channel');
     }
 }

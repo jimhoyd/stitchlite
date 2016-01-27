@@ -31,7 +31,10 @@ class ProductsController extends Controller
     	
     	// trigger to expose all the variants
     	foreach($products as $product) {
-    		$product->variants;
+    		$product->channels;
+    		foreach($product->variants as $variant) {
+    			$variant->channels;
+    		}
     	}
     	
     	return response()->json(array_merge($products->toArray(), ['code'=> 200]), 200);
@@ -80,6 +83,7 @@ class ProductsController extends Controller
         	return response()->json(['message'=>"Unable to find product by sku:{$sku}", 'code'=>404], 404);
         }
         
+        $product->channels;        
         $product->variants;
         
     	return response()->json(['data'=>$product, 'code'=>200], 200);

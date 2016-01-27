@@ -18,7 +18,7 @@ class Product extends Model
     	return $this->hasMany('App\Variant');
     }
     
-    public function channel() {
-    	 
+    public function channels() {
+    	return $this->belongsToMany('App\Channel');
     }    
 }
