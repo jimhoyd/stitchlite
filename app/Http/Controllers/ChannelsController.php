@@ -13,7 +13,6 @@ use App\Channel;
 
 use Validator;
 
-
 class ChannelsController extends Controller
 {
     /**
@@ -124,12 +123,11 @@ class ChannelsController extends Controller
     }
     
     public function sync() {
-    	// ability to swwitch syncs
-    	$channels = ['Shopify', 'Vend'];    	 
-    	
-    	foreach($channels as $channel) {
-    		$class = '\App\Services\Channels\\'.$channel;
-    		$channelSync = new $class();
+    	// fetch all the channels    	
+    	// TODO: refactor this, this is a hacky way to sync all channels
+    	foreach(Channel::all() as $channel) {
+    		$syncClass = '\App\Services\Channels\\'.$channel->name;
+    		$channelSync = new $syncClass($channel);
     		$channelSync->sync();    		
     	}
     	

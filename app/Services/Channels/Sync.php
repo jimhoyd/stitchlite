@@ -5,12 +5,13 @@ namespace App\Services\Channels;
 use GuzzleHttp\Client;
 
 use App\Product;
+use App\Channel;
 
 abstract class Sync implements SyncInterface {
 	
 	private $client;
 	
-	protected $url;
+	private $url;
 
 	abstract public function nomalizeData($data);
 	
@@ -18,7 +19,11 @@ abstract class Sync implements SyncInterface {
 	
 	abstract public function mapVariantData($data);
 		
-	public function __construct() {
+	// pass in the channel object so we can get the sync url
+	public function __construct(Channel $channel) {
+		// set the url from the database
+		$this->url = $channel->sync;
+		// setup guzzel client
 		$this->client = new Client();
 	}
 	

@@ -4,12 +4,6 @@ namespace App\Services\Channels;
 
 class Vend extends Sync {
 
-	public function __construct() {
-		// TODO: move to config file
-		$this->url = 'https://vendjimhoyd.vendhq.com/api/products?active=1&access_token=2cm49piD4flvIAmaZGUpKYZAF1gOCkKKzjpatR8z';
-		return parent::__construct();
-	}
-	
 	public function nomalizeData($data) {
 		$products = [];
 		foreach($data['products'] as $item) {
