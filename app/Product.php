@@ -10,6 +10,7 @@ class Product extends Model
     
     protected $hidden = [
     		'id',
+    		'parent_id',
     		'updated_at',
     		'created_at'
     ];
