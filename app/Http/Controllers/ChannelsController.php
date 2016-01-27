@@ -125,10 +125,7 @@ class ChannelsController extends Controller
     
     public function sync() {
     	// ability to swwitch syncs
-    	$channels = ['Shopify', 'Vend'];
-
-    	$channels = ['Vend'];
-    	 
+    	$channels = ['Shopify', 'Vend'];    	 
     	
     	foreach($channels as $channel) {
     		$class = '\App\Services\Channels\\'.$channel;

@@ -6,7 +6,7 @@ class Vend extends Sync {
 
 	public function __construct() {
 		// TODO: move to config file
-		$this->url = 'https://vendjimhoyd.vendhq.com/api/products?active=1&access_token=9VGEiK4dkm7UQRw1t2EpO1Hl5yIOJHaAVPnx0qVc';
+		$this->url = 'https://vendjimhoyd.vendhq.com/api/products?active=1&access_token=2cm49piD4flvIAmaZGUpKYZAF1gOCkKKzjpatR8z';
 		return parent::__construct();
 	}
 	
