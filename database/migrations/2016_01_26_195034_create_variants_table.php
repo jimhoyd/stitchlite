@@ -14,14 +14,14 @@ class CreateVariantsTable extends Migration
     {
         Schema::create('variants', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('product_id')->unsigned();
             $table->string('name');
             $table->string('sku', 60)->unique()->index();
-            $table->string('parent_sku');
             $table->integer('quantity');
             $table->float('price');
             $table->timestamps();
             
-            $table->foreign('parent_sku')->references('sku')->on('products')->onDelete('cascade');            
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');            
         });    
     }
 

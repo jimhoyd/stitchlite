@@ -15,7 +15,7 @@ class Variant extends Model
     ];
     
     public function product() {
-    	return $this->belongsTo('App\Product', 'sku', 'parent_sku');
+    	return $this->belongsTo('App\Product');
     }
     
     public function channel() {
