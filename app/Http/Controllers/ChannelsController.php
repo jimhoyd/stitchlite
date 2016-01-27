@@ -129,7 +129,7 @@ class ChannelsController extends Controller
     	$httpClient = new Client();
     
     	// fetch the data
-    	$response = $httpClient->request('GET', 'https://vendjimhoyd.vendhq.com/api/products?access_token=9VGEiK4dkm7UQRw1t2EpO1Hl5yIOJHaAVPnx0qVc');
+    	$response = $httpClient->request('GET', 'https://vendjimhoyd.vendhq.com/api/products?active=1&access_token=9VGEiK4dkm7UQRw1t2EpO1Hl5yIOJHaAVPnx0qVc');
     	$data = json_decode($response->getBody(), true);
     	
 		$products = [];
@@ -147,30 +147,30 @@ class ChannelsController extends Controller
     	}
     	
     	// loop thru the data
-    	foreach($products as $productData) {
-    		$sku = $productData['sku'];
+    	foreach($products as $p) {
+    		$sku = $p['sku'];
     
     		// create the product if does not exist
     		$product = Product::where('sku', $sku)->get()->first();
     		if(!$product) {
     			$product = Product::create([
-    					'name' => $productData['name'],
+    					'name' => $p['name'],
     					'sku' => $sku,
-    					'price' => (float) $productData['price'],
-    					'quantity' => (int) array_reduce($productData['inventory'], function($total, $item) {
+    					'price' => (float) $p['price'],
+    					'quantity' => (int) array_reduce($p['inventory'], function($total, $item) {
     						return $total+$item['count'];
     					}, 0)
     			]);
     		}
     
     		// loop thru all the variants
-    		foreach($productData['variants'] as $variantData) {
+    		foreach($p['variants'] as $v) {
     			// remapping from variant data
     			extract([
-    					'name' => $variantData['name'],
-    					'sku' =>  $variantData['sku'],
-    					'price' => (float) $variantData['price'],
-    					'quantity' =>  (int) array_reduce($variantData['inventory'], function($total, $item) {
+    					'name' => $v['name'],
+    					'sku' =>  $v['sku'],
+    					'price' => (float) $v['price'],
+    					'quantity' =>  (int) array_reduce($v['inventory'], function($total, $item) {
     						return $total+$item['count'];
     					}, 0)
     			], EXTR_OVERWRITE);
@@ -198,20 +198,20 @@ class ChannelsController extends Controller
     	$products = $data['products'];
     	
     	// loop thru the data
-    	foreach($products as $productData) {    		
-    		$sku = $productData['handle'];
+    	foreach($products as $p) {    		
+    		$sku = $p['handle'];
     		
     		// create the product if does not exist
     		$product = Product::where('sku', $sku)->get()->first();
     		if(!$product) {
     			$product = Product::create([
-    				'name' => $productData['title'],
+    				'name' => $p['title'],
     				'sku' => $sku
     			]);    			 
     		}
     		
     		// loop thru all the variants
-    		foreach($productData['variants'] as $variantData) {
+    		foreach($p['variants'] as $variantData) {
     			// remapping from variant data
     			extract([
 					'name' => $variantData['title'],
@@ -220,10 +220,10 @@ class ChannelsController extends Controller
 					'price' => $variantData['price']    					    	
     			], EXTR_OVERWRITE);
     			
-    			$productVariants = $product->variants(); 
-    			$variant = $productVariants->where('sku', $sku)->get()->first();
+    			$v = $product->variants(); 
+    			$variant = $v->where('sku', $sku)->get()->first();
     			if(!$variant) {
-    				$variant = $productVariants->create(compact('name', 'sku', 'quantity', 'price'));    				
+    				$variant = $v->create(compact('name', 'sku', 'quantity', 'price'));    				
     			} else {
     				$variant->update(compact('name', 'quantity', 'price'));
     			}
