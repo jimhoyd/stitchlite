@@ -70,6 +70,8 @@ class ChannelsController extends Controller
         	return response()->json(['message'=>"Unable to find channel by id:{$id}", 'code'=>404], 404);
         }
         
+        $channel->products;
+        
     	return response()->json(['data'=>$channel, 'code'=>200], 200);
     }
 

@@ -36,8 +36,29 @@ abstract class Sync implements SyncInterface {
 		return json_decode($response->getBody(), true);
 	}
 		
+	public function sync() {
+		// fetch the data from the channel api
+		// nomalize the data if it comes back linearly
+		$products = $this->nomalizeData($this->fetchData());
+	
+		// loop thru the products
+		foreach($products as $productData) {
+			// store the product, if exist update
+			$product = $this->storeProduct($productData);
+			// loop thru the variants
+			if($product && $productData['variants']) {
+				foreach($productData['variants'] as $variantData) {
+					// store the variant, if exsit update
+					$this->storeVariant($product, $variantData);
+				}
+			}
+		}
+	
+		return true;
+	}	
+	
 	// store product
-	public function storeProduct($data) {
+	private function storeProduct($data) {
 		$data = $this->mapProductData($data);
 		
 		$product = Product::updateOrCreate(['sku'=>$data['sku']], $data);
@@ -50,7 +71,7 @@ abstract class Sync implements SyncInterface {
 	}
 	
 	// store variant
-	public function storeVariant(Product $product, $data) {		
+	private function storeVariant(Product $product, $data) {		
 		$data = $this->mapVariantData($data);		
 		
 		$variant = $product->variants()->updateOrCreate(['sku'=>$data['sku']], $data);
@@ -62,26 +83,4 @@ abstract class Sync implements SyncInterface {
 		
 		return $variant;
 	}
-	
-	public function sync() {
-		// fetch the data from the channel api
-		// nomalize the data if it comes back linearly
-		$products = $this->nomalizeData($this->fetchData());		
-
-		// loop thru the products
-		foreach($products as $productData) {
-			// store the product, if exist update
-			$product = $this->storeProduct($productData);
-			// loop thru the variants
-			if($product && $productData['variants']) {
-				foreach($productData['variants'] as $variantData) {
-					// store the variant, if exsit update
-					$this->storeVariant($product, $variantData);
-				}				
-			}			
-		}		
-		
-		return true;
-	}
-	
 }

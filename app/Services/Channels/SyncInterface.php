@@ -14,10 +14,6 @@ interface SyncInterface {
 	
 	public function mapVariantData($data);	
 	
-	public function storeProduct($data);
-	
-	public function storeVariant(Product $product, $data);
-	
 	public function sync();
 	
 }

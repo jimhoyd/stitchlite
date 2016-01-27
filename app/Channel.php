@@ -9,7 +9,6 @@ class Channel extends Model
     protected $fillable = ['name'];
     
     protected $hidden = [
-    	'id',
     	'sync',
     	'pivot',
    		'updated_at',
