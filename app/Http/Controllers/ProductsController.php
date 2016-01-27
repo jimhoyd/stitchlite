@@ -84,7 +84,9 @@ class ProductsController extends Controller
         }
         
         $product->channels;        
-        $product->variants;
+        foreach($product->variants as $variant) {
+    		$variant->channels;
+    	}
         
     	return response()->json(['data'=>$product, 'code'=>200], 200);
     }

@@ -8,7 +8,6 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Product;
-use App\Variant;
 use App\Channel;
 
 use Validator;

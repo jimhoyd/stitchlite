@@ -19,8 +19,4 @@ class Channel extends Model
     public function products() {
     	return $this->belongsToMany('App\Product');
     }    
-    
-    public function variants() {
-    	return $this->belongsToMany('App\Variant');
-    }
 }

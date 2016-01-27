@@ -15,7 +15,11 @@ class Product extends Model
     ];
     
     public function variants() {
-    	return $this->hasMany('App\Variant');
+    	return $this->hasMany('App\Product', 'parent_id');
+    }
+    
+    public function products() {
+    	return $this->belongsTo('App\Product', 'parent_id');
     }
     
     public function channels() {

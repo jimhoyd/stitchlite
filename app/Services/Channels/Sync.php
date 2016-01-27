@@ -5,7 +5,6 @@ namespace App\Services\Channels;
 use GuzzleHttp\Client;
 
 use App\Product;
-use App\Variant;
 use App\Channel;
 
 abstract class Sync implements SyncInterface {
@@ -41,11 +40,6 @@ abstract class Sync implements SyncInterface {
 	public function storeProduct($data) {
 		$data = $this->mapProductData($data);
 		
-		// make sure there is no sku used in variant table		
-		if(Variant::where('sku', $data['sku'])->get()->first()) {
-			return false;
-		}
-		
 		$product = Product::updateOrCreate(['sku'=>$data['sku']], $data);
 		// add link to channel via pivot table
 		// inefficient should refactor
@@ -57,12 +51,7 @@ abstract class Sync implements SyncInterface {
 	
 	// store variant
 	public function storeVariant(Product $product, $data) {		
-		$data = $this->mapVariantData($data);
-		
-		// make sure there is no sku used in product table
-		if(Product::where('sku', $data['sku'])->get()->first()) {
-			return false;
-		}		
+		$data = $this->mapVariantData($data);		
 		
 		$variant = $product->variants()->updateOrCreate(['sku'=>$data['sku']], $data);
 		// add link to channel via pivot table

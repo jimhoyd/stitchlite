@@ -27,15 +27,7 @@ class CreateChannelsTable extends Migration
         	$table->timestamps();        	
         	$table->unique(['channel_id', 'product_id']);
         }); 
-        
-        Schema::create('channel_variant', function (Blueprint $table) {
-        	$table->integer('channel_id')->unsigned()->index();
-        	$table->foreign('channel_id')->references('id')->on('channels')->onDelete('cascade');        	
-        	$table->integer('variant_id')->unsigned()->index();
-        	$table->foreign('variant_id')->references('id')->on('variants')->onDelete('cascade');        		 
-        	$table->timestamps();
-        	$table->unique(['channel_id', 'variant_id']);
-        });        
+                
     }
 
     /**
@@ -46,7 +38,6 @@ class CreateChannelsTable extends Migration
     public function down()
     {
     	Schema::drop('channel_product');
-    	Schema::drop('channel_variant');
         Schema::drop('channels');
     }
 }
