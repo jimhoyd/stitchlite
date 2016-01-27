@@ -129,21 +129,37 @@ class ChannelsController extends Controller
     	$httpClient = new Client();
     
     	// fetch the data
-    	$response = $httpClient->request('GET', 'https://3155a4a7f64a0ce0f7cf95f93b852182:fcd5194e83e316e7d1b3f2d915d92b06@stitchlite-jimhoyd.myshopify.com/admin/products.json');
+    	$response = $httpClient->request('GET', 'https://vendjimhoyd.vendhq.com/api/products?access_token=9VGEiK4dkm7UQRw1t2EpO1Hl5yIOJHaAVPnx0qVc');
     	$data = json_decode($response->getBody(), true);
-    
-    	$products = $data['products'];
-    	 
+    	
+		$products = [];
+		
+    	foreach($data['products'] as $item) {
+   			if(!$item['variant_parent_id']) {   				
+   				$item['variants'] = [];
+   				$products[$item['id']] = $item;
+   			}     		
+    	}
+    	foreach($data['products'] as $item) {
+    		if($item['variant_parent_id']) {
+    			$products[$item['variant_parent_id']]['variants'][$item['id']] = $item;
+    		}
+    	}
+    	
     	// loop thru the data
     	foreach($products as $productData) {
-    		$sku = $productData['handle'];
+    		$sku = $productData['sku'];
     
     		// create the product if does not exist
     		$product = Product::where('sku', $sku)->get()->first();
     		if(!$product) {
     			$product = Product::create([
-    					'name' => $productData['title'],
-    					'sku' => $sku
+    					'name' => $productData['name'],
+    					'sku' => $sku,
+    					'price' => (float) $productData['price'],
+    					'quantity' => (int) array_reduce($productData['inventory'], function($total, $item) {
+    						return $total+$item['count'];
+    					}, 0)
     			]);
     		}
     
@@ -151,10 +167,12 @@ class ChannelsController extends Controller
     		foreach($productData['variants'] as $variantData) {
     			// remapping from variant data
     			extract([
-    					'name' => $variantData['title'],
+    					'name' => $variantData['name'],
     					'sku' =>  $variantData['sku'],
-    					'quantity' => $variantData['inventory_quantity'],
-    					'price' => $variantData['price']
+    					'price' => (float) $variantData['price'],
+    					'quantity' =>  (int) array_reduce($variantData['inventory'], function($total, $item) {
+    						return $total+$item['count'];
+    					}, 0)
     			], EXTR_OVERWRITE);
     			 
     			$productVariants = $product->variants();
@@ -176,7 +194,7 @@ class ChannelsController extends Controller
     	// fetch the data
     	$response = $httpClient->request('GET', 'https://3155a4a7f64a0ce0f7cf95f93b852182:fcd5194e83e316e7d1b3f2d915d92b06@stitchlite-jimhoyd.myshopify.com/admin/products.json');    	    	
     	$data = json_decode($response->getBody(), true);
-    	    	
+    	
     	$products = $data['products'];
     	
     	// loop thru the data
