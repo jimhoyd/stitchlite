@@ -29,6 +29,11 @@ class ProductsController extends Controller
 
     	$products = Product::orderBy('created_at', 'desc')->paginate($limit);
     	
+    	// trigger to expose all the variants
+    	foreach($products as $product) {
+    		$product->variants;
+    	}
+    	
     	return response()->json(array_merge($products->toArray(), ['code'=> 200]), 200);
     }
 
@@ -74,6 +79,8 @@ class ProductsController extends Controller
         if(!$product) {
         	return response()->json(['message'=>"Unable to find product by sku:{$sku}", 'code'=>404], 404);
         }
+        
+        $product->variants;
         
     	return response()->json(['data'=>$product, 'code'=>200], 200);
     }

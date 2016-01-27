@@ -11,10 +11,7 @@ use App\Product;
 use App\Variant;
 use App\Channel;
 
-use GuzzleHttp\Client;
-
 use Validator;
-use App\ShopifySync;
 
 
 class ChannelsController extends Controller
@@ -126,121 +123,19 @@ class ChannelsController extends Controller
     	return response()->json(['message'=>"Channel id:{$id} has been deleted", 'code'=>200], 200);
     }
     
-    public function sync2() {
-    	$httpClient = new Client();
-    
-    	// fetch the data
-    	$response = $httpClient->request('GET', 'https://vendjimhoyd.vendhq.com/api/products?active=1&access_token=9VGEiK4dkm7UQRw1t2EpO1Hl5yIOJHaAVPnx0qVc');
-    	$data = json_decode($response->getBody(), true);
-    	
-		$products = [];
-		
-    	foreach($data['products'] as $item) {
-   			if(!$item['variant_parent_id']) {   				
-   				$item['variants'] = [];
-   				$products[$item['id']] = $item;
-   			}     		
-    	}
-    	foreach($data['products'] as $item) {
-    		if($item['variant_parent_id']) {
-    			$products[$item['variant_parent_id']]['variants'][$item['id']] = $item;
-    		}
-    	}
-    	
-    	// loop thru the data
-    	foreach($products as $p) {
-    		$sku = $p['sku'];
-    
-    		// create the product if does not exist
-    		$product = Product::where('sku', $sku)->get()->first();
-    		if(!$product) {
-    			$product = Product::create([
-    					'name' => $p['name'],
-    					'sku' => $sku,
-    					'price' => (float) $p['price'],
-    					'quantity' => (int) array_reduce($p['inventory'], function($total, $item) {
-    						return $total+$item['count'];
-    					}, 0)
-    			]);
-    		}
-    
-    		// loop thru all the variants
-    		foreach($p['variants'] as $v) {
-    			// remapping from variant data
-    			extract([
-    					'name' => $v['name'],
-    					'sku' =>  $v['sku'],
-    					'price' => (float) $v['price'],
-    					'quantity' =>  (int) array_reduce($v['inventory'], function($total, $item) {
-    						return $total+$item['count'];
-    					}, 0)
-    			], EXTR_OVERWRITE);
-    			 
-    			$productVariants = $product->variants();
-    			$variant = $productVariants->where('sku', $sku)->get()->first();
-    			if(!$variant) {
-    				$variant = $productVariants->create(compact('name', 'sku', 'quantity', 'price'));
-    			} else {
-    				$variant->update(compact('name', 'quantity', 'price'));
-    			}
-    		}
-    
-    	}
-    	 
-    }    
-    
-    public function sync3() {
-    	$httpClient = new Client();
-    	    	
-    	// fetch the data
-    	$response = $httpClient->request('GET', 'https://3155a4a7f64a0ce0f7cf95f93b852182:fcd5194e83e316e7d1b3f2d915d92b06@stitchlite-jimhoyd.myshopify.com/admin/products.json');    	    	
-    	$data = json_decode($response->getBody(), true);
-    	
-    	$products = $data['products'];
-    	
-    	// loop thru the data
-    	foreach($products as $p) {    		
-    		$sku = $p['handle'];
-    		
-    		// create the product if does not exist
-    		$product = Product::where('sku', $sku)->get()->first();
-    		if(!$product) {
-    			$product = Product::create([
-    				'name' => $p['title'],
-    				'sku' => $sku
-    			]);    			 
-    		}
-    		
-    		// loop thru all the variants
-    		foreach($p['variants'] as $variantData) {
-    			// remapping from variant data
-    			extract([
-					'name' => $variantData['title'],
-					'sku' =>  $variantData['sku'],
-					'quantity' => $variantData['inventory_quantity'],
-					'price' => $variantData['price']    					    	
-    			], EXTR_OVERWRITE);
-    			
-    			$v = $product->variants(); 
-    			$variant = $v->where('sku', $sku)->get()->first();
-    			if(!$variant) {
-    				$variant = $v->create(compact('name', 'sku', 'quantity', 'price'));    				
-    			} else {
-    				$variant->update(compact('name', 'quantity', 'price'));
-    			}
-    		}
-    		
-    	}
-    	
-    }
-    
     public function sync() {
     	// ability to swwitch syncs
+    	$channels = ['Shopify', 'Vend'];
+
+    	$channels = ['Vend'];
+    	 
     	
-//     	$shopifySync = new \App\ShopifySync();
-//     	$shopifySync->sync();
+    	foreach($channels as $channel) {
+    		$class = '\App\Services\Channels\\'.$channel;
+    		$channelSync = new $class();
+    		$channelSync->sync();    		
+    	}
     	
-    	$vendSync = new \App\VendSync();
-    	$vendSync->sync();    	
+    	return response()->json(['message'=>"Sync completed", 'code'=>200], 200);
     }
 }

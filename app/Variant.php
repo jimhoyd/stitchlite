@@ -10,6 +10,7 @@ class Variant extends Model
     
     protected $hidden = [
     		'id',
+    		'product_id',
     		'updated_at',
     		'created_at'
     ];
