@@ -14,6 +14,7 @@ use App\Channel;
 use GuzzleHttp\Client;
 
 use Validator;
+use App\ShopifySync;
 
 
 class ChannelsController extends Controller
@@ -125,7 +126,7 @@ class ChannelsController extends Controller
     	return response()->json(['message'=>"Channel id:{$id} has been deleted", 'code'=>200], 200);
     }
     
-    public function sync() {
+    public function sync2() {
     	$httpClient = new Client();
     
     	// fetch the data
@@ -188,7 +189,7 @@ class ChannelsController extends Controller
     	 
     }    
     
-    public function sync2() {
+    public function sync3() {
     	$httpClient = new Client();
     	    	
     	// fetch the data
@@ -231,5 +232,15 @@ class ChannelsController extends Controller
     		
     	}
     	
+    }
+    
+    public function sync() {
+    	// ability to swwitch syncs
+    	
+//     	$shopifySync = new \App\ShopifySync();
+//     	$shopifySync->sync();
+    	
+    	$vendSync = new \App\VendSync();
+    	$vendSync->sync();    	
     }
 }
