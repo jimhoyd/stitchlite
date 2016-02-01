@@ -1,27 +1,42 @@
-# Laravel PHP Framework
+pagckages that I used
+* laravel 5.2
+* Guzzle 6
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+problems i ran into 
+* ran into issues with laravel migration and foreign keys
+* latest guzzle now implemented psr7, and dropper response->json(), has to hunt for a solution
+* did not completely implement the oauth2 request token workflow for vend
+* 2 stage sync as in sync products then variants has a issue where because I cannot get an sku from shopify so I am using the handle as an interm solution
+* made an assumption that syncing was always product -> variant
+* another issue with not being familar with the framework, I created a seperate variants table
+* refactor the vend class to avoid using normalize data and do it in one loop
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
 
-Laravel is accessible, yet powerful, providing powerful tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+things i like about laravel
+* compared to zf2 it is a lot more structured, give more guidance on models creation 
+* uses alot of the newer php functionality like traits and reflection
+* has an interesting way to do DI, via typing the function
+* is strongly tied to the equloent ORM
+* built in Users concept out of the box
+* middleware concept is nice, easier to undertand the request lifecycle
+* out of the box trottling middleware
+* psr4 is much nicer
 
-## Official Documentation
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+0.) demo that it works
+0.5) running on local
+1.) talk about the database, migration and walk thru all the tables
+2.) show the models
+3.) show the controller
+4.) show the sync abstraction and interface
+5.) things that can be better
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+have not figured out a good way to handle shopify not having sku for parent product
+move the price and quantity to the pivot table
+optimize the sync for vend, to accomplish it in one loop
+refactor the sync url to get from config
+finish the oauth workflow with token refresh
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)

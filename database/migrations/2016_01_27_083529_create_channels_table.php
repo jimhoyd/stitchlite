@@ -21,9 +21,12 @@ class CreateChannelsTable extends Migration
         
         Schema::create('channel_product', function (Blueprint $table) {
         	$table->integer('channel_id')->unsigned()->index();
-        	$table->foreign('channel_id')->references('id')->on('channels')->onDelete('cascade');        	 
         	$table->integer('product_id')->unsigned()->index();
-        	$table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');        	
+        	$table->integer('reference_id')->unsigned()->index();
+        	$table->integer('quantity')->nullable();
+        	$table->float('price')->nullable();
+        	$table->foreign('channel_id')->references('id')->on('channels')->onDelete('cascade');        	 
+        	$table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         	$table->timestamps();        	
         	$table->unique(['channel_id', 'product_id']);
         }); 
