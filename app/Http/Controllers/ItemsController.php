@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Product;
+use App\Item;
 
 use Validator;
 
-class ProductsController extends Controller
+class ItemsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,17 +27,17 @@ class ProductsController extends Controller
 // 			return Product::all();
 //     	});
 
-    	$products = Product::orderBy('created_at', 'desc')->paginate($limit);
+    	$items = Item::orderBy('created_at', 'desc')->paginate($limit);
     	
     	// trigger to expose all the variants
-    	foreach($products as $product) {
-    		$product->channels;
-    		foreach($product->variants as $variant) {
+    	foreach($items as $item) {
+			$item->channels;
+    		foreach($item->variants as $variant) {
     			$variant->channels;
     		}
     	}
     	
-    	return response()->json(array_merge($products->toArray(), ['code'=> 200]), 200);
+    	return response()->json(array_merge($items->toArray(), ['code'=> 200]), 200);
     }
 
     /**
@@ -60,14 +60,14 @@ class ProductsController extends Controller
 	    }
     	
         // create new product
-        $product = Product::create([
+        $item = Item::create([
         	"name" => $request->name,
         	"sku" => $request->sku,
         	"stock" => $request->stock,        	
         	"price" => $request->price,
         ]);
        
-       return response()->json(['message'=>"Product {$request->name} has been created", 'data'=>$product, 'code'=>201], 201);
+       return response()->json(['message'=>"Product {$request->name} has been created", 'data'=>$item, 'code'=>201], 201);
     }
 
     /**
@@ -78,17 +78,17 @@ class ProductsController extends Controller
      */
     public function show($sku)
     {
-        $product = Product::where('sku', '=', $sku)->limit(1)->first();        
-        if(!$product) {
-        	return response()->json(['message'=>"Unable to find product by sku:{$sku}", 'code'=>404], 404);
+        $item = Item::where('sku', '=', $sku)->limit(1)->first();
+        if(!$item) {
+        	return response()->json(['message'=>"Unable to find item by sku:{$sku}", 'code'=>404], 404);
         }
-        
-        $product->channels;        
-        foreach($product->variants as $variant) {
+
+		$item->channels;
+        foreach($item->variants as $variant) {
     		$variant->channels;
     	}
         
-    	return response()->json(['data'=>$product, 'code'=>200], 200);
+    	return response()->json(['data'=>$item, 'code'=>200], 200);
     }
 
     /**
@@ -101,8 +101,8 @@ class ProductsController extends Controller
     public function update(Request $request, $sku)
     {
         // edit
-    	$product = Product::where('sku', '=', $sku)->limit(1)->first();
-    	if(!$product) {
+		$item = Item::where('sku', '=', $sku)->limit(1)->first();
+    	if(!$item) {
     		return response()->json(['message'=>"Unable to find product by sku:{$sku}", 'code'=>404], 404);
     	}        
     	    	
@@ -116,15 +116,15 @@ class ProductsController extends Controller
     	if ($validator->fails()) {
     		return response()->json(['message'=>$validator->errors(), 'code'=>422], 422);
     	}
-    	 
-    	$product->update([
+
+		$item->update([
         	"name" => $request->name,
         	"sku" => $request->sku,
         	"stock" => $request->stock,        	
         	"price" => $request->price,
         ]);
     	 
-    	return response()->json(['message'=>"Product sku:{$sku} has been updated", 'data'=>$product, 'code'=>200], 200); 
+    	return response()->json(['message'=>"Product sku:{$sku} has been updated", 'data'=>$item, 'code'=>200], 200);
     }
 
     /**
@@ -136,13 +136,13 @@ class ProductsController extends Controller
     public function destroy($sku)
     {
         // delete
-    	$product = Product::where('sku', '=', $sku)->limit(1)->first();
-    	if(!$product) {
-    		return response()->json(['message'=>"Unable to find product by sku:{$sku}", 'code'=>404], 404);
+		$item = Item::where('sku', '=', $sku)->limit(1)->first();
+    	if(!$item) {
+    		return response()->json(['message'=>"Unable to find item by sku:{$sku}", 'code'=>404], 404);
     	}
-    	
-    	$product->delete();
+
+		$item->delete();
     	    	
-    	return response()->json(['message'=>"Product sku:{$sku} has been deleted", 'code'=>200], 200);
+    	return response()->json(['message'=>"Item sku:{$sku} has been deleted", 'code'=>200], 200);
     }
 }

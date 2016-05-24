@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Product;
+use App\Item;
 use App\Channel;
 
 use Validator;
@@ -70,7 +70,7 @@ class ChannelsController extends Controller
         	return response()->json(['message'=>"Unable to find channel by id:{$id}", 'code'=>404], 404);
         }
         
-        $channel->products;
+        $channel->items;
         
     	return response()->json(['data'=>$channel, 'code'=>200], 200);
     }

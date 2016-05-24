@@ -2,7 +2,7 @@
 
 namespace App\Services\Channels;
 
-use App\Product;
+use App\Item;
 
 interface SyncInterface {
 	
@@ -10,7 +10,7 @@ interface SyncInterface {
 	
 	public function nomalizeData($data);
 	
-	public function mapProductData($data);
+	public function mapItemData($data);
 	
 	public function mapVariantData($data);	
 	

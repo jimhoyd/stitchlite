@@ -8,7 +8,7 @@ class Shopify extends Sync {
 		return $data['products'];
 	}
 	
-	public function mapProductData($data) {
+	public function mapItemData($data) {
 		return [
 			'name' => $data['title'],
 			'sku' => @$data['handle']

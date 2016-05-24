@@ -15,7 +15,7 @@ class Channel extends Model
    		'created_at'
     ];    
     
-    public function products() {
-    	return $this->belongsToMany('App\Product');
+    public function items() {
+    	return $this->belongsToMany('App\Item');
     }    
 }

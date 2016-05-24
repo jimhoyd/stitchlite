@@ -4,7 +4,7 @@ namespace App\Services\Channels;
 
 use GuzzleHttp\Client;
 
-use App\Product;
+use App\Item;
 use App\Channel;
 
 abstract class Sync implements SyncInterface {
@@ -17,7 +17,7 @@ abstract class Sync implements SyncInterface {
 
 	abstract public function nomalizeData($data);
 	
-	abstract public function mapProductData($data);
+	abstract public function mapItemData($data);
 	
 	abstract public function mapVariantData($data);
 		
@@ -40,17 +40,17 @@ abstract class Sync implements SyncInterface {
 	public function sync() {
 		// fetch the data from the channel api
 		// nomalize the data if it comes back linearly
-		$products = $this->nomalizeData($this->fetchData());
+		$items = $this->nomalizeData($this->fetchData());
 	
 		// loop thru the products
-		foreach($products as $productData) {
+		foreach($items as $itemData) {
 			// store the product, if exist update
-			$product = $this->storeProduct($productData);
+			$item = $this->storeItem($itemData);
 			// loop thru the variants
-			if($product && $productData['variants']) {
-				foreach($productData['variants'] as $variantData) {
+			if($item && $itemData['variants']) {
+				foreach($itemData['variants'] as $variantData) {
 					// store the variant, if exsit update
-					$this->storeVariant($product, $variantData);
+					$this->storeVariant($item, $variantData);
 				}
 			}
 		}
@@ -59,23 +59,23 @@ abstract class Sync implements SyncInterface {
 	}	
 	
 	// store product
-	private function storeProduct($data) {
-		$data = $this->mapProductData($data);
+	private function storeItem($data) {
+		$data = $this->mapItemData($data);
 		
-		$product = Product::updateOrCreate(['sku'=>$data['sku']], $data);
+		$item = Item::updateOrCreate(['sku'=>$data['sku']], $data);
 		// add link to channel via pivot table
 		// inefficient should refactor
-		if(!$product->channels->contains($this->channel->id)) {
-			$product->channels()->attach($this->channel->id);				
+		if(!$item->channels->contains($this->channel->id)) {
+			$item->channels()->attach($this->channel->id);
 		}
-		return $product;
+		return $item;
 	}
 	
 	// store variant
-	private function storeVariant(Product $product, $data) {		
+	private function storeVariant(Item $item, $data) {
 		$data = $this->mapVariantData($data);		
 		
-		$variant = $product->variants()->updateOrCreate(['sku'=>$data['sku']], $data);
+		$variant = $item->variants()->updateOrCreate(['sku'=>$data['sku']], $data);
 		// add link to channel via pivot table
 		// inefficient should refactor
 		if(!$variant->channels->contains($this->channel->id)) {

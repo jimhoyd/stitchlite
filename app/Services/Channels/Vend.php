@@ -7,22 +7,22 @@ namespace App\Services\Channels;
 class Vend extends Sync {
 
 	public function nomalizeData($data) {
-		$products = [];
+		$items = [];
 		foreach($data['products'] as $item) {
 			if(!$item['variant_parent_id']) {
 				$item['variants'] = [];
-				$products[$item['id']] = $item;
+				$items[$item['id']] = $item;
 			}
 		}
 		foreach($data['products'] as $item) {
 			if($item['variant_parent_id']) {
-				$products[$item['variant_parent_id']]['variants'][$item['id']] = $item;
+				$items[$item['variant_parent_id']]['variants'][$item['id']] = $item;
 			}
 		}		
-		return $products;
+		return $items;
 	}
 	
-	public function mapProductData($data) {
+	public function mapItemtData($data) {
 		return [
     		'name' => $data['name'],
     		'sku' => $data['sku'],

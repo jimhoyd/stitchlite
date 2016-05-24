@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Item extends Model
 {
-    protected $fillable = ['name', 'sku', 'quantity', 'price'];
+    protected $fillable = ['sku', 'name', 'summary', 'description', 'quantity', 'price'];
     
     protected $hidden = [
     		'id',
@@ -16,11 +16,11 @@ class Product extends Model
     ];
     
     public function variants() {
-    	return $this->hasMany('App\Product', 'parent_id');
+    	return $this->hasMany('App\Item', 'parent_id');
     }
     
-    public function products() {
-    	return $this->belongsTo('App\Product', 'parent_id');
+    public function items() {
+    	return $this->belongsTo('App\Item', 'parent_id');
     }
     
     public function channels() {
