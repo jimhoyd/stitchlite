@@ -16,6 +16,8 @@ class CreateChannelsTable extends Migration
             $table->increments('id');
             $table->string('name')->unique();    
             $table->string('sync');
+            // date pushed
+            // date pulled
             $table->timestamps();
         });
         
@@ -23,6 +25,11 @@ class CreateChannelsTable extends Migration
         	$table->integer('channel_id')->unsigned()->index();
         	$table->foreign('channel_id')->references('id')->on('channels')->onDelete('cascade');        	 
         	$table->integer('item_id')->unsigned()->index();
+            $table->string('summary', 1024)->nullable();
+            $table->integer('quantity')->nullable();
+            $table->float('price')->nullable();
+            // date pushed
+            // date pulled
         	$table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
         	$table->timestamps();        	
         	$table->unique(['channel_id', 'item_id']);

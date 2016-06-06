@@ -21,6 +21,53 @@ class CreateItemsTable extends Migration
             $table->string('description', 2048)->nullable();
             $table->integer('quantity')->nullable();
             $table->float('price')->nullable();
+            $table->float('weight')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('item_media', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('item_id')->unsigned()->index();
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->string('uri', 1024);
+            $table->string('type', 60);
+            $table->timestamps();
+        });
+
+        Schema::create('item_attributes', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('item_id')->unsigned()->index();
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->string('key', 60);
+            $table->string('value', 60);
+            $table->string('type', 60);
+            $table->timestamps();
+        });
+
+        Schema::create('item_tags', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('item_id')->unsigned()->index();
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->string('tag', 60);
+            $table->string('type', 60);
+            $table->timestamps();
+        });
+
+        Schema::create('item_notes', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('item_id')->unsigned()->index();
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->string('tag', 60);
+            $table->string('type', 60);
+            $table->timestamps();
+        });
+
+        Schema::create('item_locations', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('item_id')->unsigned()->index();
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->string('tag', 60);
+            $table->string('type', 60);
             $table->timestamps();
         });
     }
