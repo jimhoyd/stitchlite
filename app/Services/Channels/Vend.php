@@ -2,19 +2,19 @@
 
 namespace App\Services\Channels;
 
-// refactor this class to only loop thru once, leveraging the products() and variants()
+// refactor this class to only loop thru once, leveraging the items() and variants()
 
 class Vend extends Sync {
 
 	public function nomalizeData($data) {
 		$items = [];
-		foreach($data['products'] as $item) {
+		foreach($data['items'] as $item) {
 			if(!$item['variant_parent_id']) {
 				$item['variants'] = [];
 				$items[$item['id']] = $item;
 			}
 		}
-		foreach($data['products'] as $item) {
+		foreach($data['items'] as $item) {
 			if($item['variant_parent_id']) {
 				$items[$item['variant_parent_id']]['variants'][$item['id']] = $item;
 			}

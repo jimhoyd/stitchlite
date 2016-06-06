@@ -13,7 +13,7 @@ class ChannelsSeeder extends Seeder
     {
     	DB::table('channels')->insert([
     			'name' => 'Shopify',
-    			'sync' => 'https://3155a4a7f64a0ce0f7cf95f93b852182:fcd5194e83e316e7d1b3f2d915d92b06@stitchlite-jimhoyd.myshopify.com/admin/products.json'
+    			'sync' => 'https://3155a4a7f64a0ce0f7cf95f93b852182:fcd5194e83e316e7d1b3f2d915d92b06@stitchlite-jimhoyd.myshopify.com/admin/items.json'
     	]);
     	DB::table('channels')->insert([
     			'name' => 'Vend',

@@ -5,7 +5,7 @@ namespace App\Services\Channels;
 class Shopify extends Sync {
 
 	public function nomalizeData($data) {
-		return $data['products'];
+		return $data['items'];
 	}
 	
 	public function mapItemData($data) {

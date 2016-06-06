@@ -19,13 +19,13 @@ class CreateChannelsTable extends Migration
             $table->timestamps();
         });
         
-        Schema::create('channel_product', function (Blueprint $table) {
+        Schema::create('channel_item', function (Blueprint $table) {
         	$table->integer('channel_id')->unsigned()->index();
         	$table->foreign('channel_id')->references('id')->on('channels')->onDelete('cascade');        	 
-        	$table->integer('product_id')->unsigned()->index();
-        	$table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');        	
+        	$table->integer('item_id')->unsigned()->index();
+        	$table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
         	$table->timestamps();        	
-        	$table->unique(['channel_id', 'product_id']);
+        	$table->unique(['channel_id', 'item_id']);
         }); 
                 
     }
@@ -37,7 +37,7 @@ class CreateChannelsTable extends Migration
      */
     public function down()
     {
-    	Schema::drop('channel_product');
+    	Schema::drop('channel_item');
         Schema::drop('channels');
     }
 }

@@ -22,9 +22,9 @@ class ItemsController extends Controller
     {
     	$limit = $request->get('limit', 10);
     	
-//     	$products = Cache::remember('products', 15/60, function() use($limit) {
-//     		return Product::orderBy('created_at', 'desc')->paginate($limit);
-// 			return Product::all();
+//     	$items = Cache::remember('items', 15/60, function() use($limit) {
+//     		return Item::orderBy('created_at', 'desc')->paginate($limit);
+// 			return Item::all();
 //     	});
 
     	$items = Item::orderBy('created_at', 'desc')->paginate($limit);
@@ -59,7 +59,7 @@ class ItemsController extends Controller
 			return response()->json(['message'=>$validator->errors(), 'code'=>422], 422);
 	    }
     	
-        // create new product
+        // create new item
         $item = Item::create([
         	"name" => $request->name,
         	"sku" => $request->sku,
@@ -67,7 +67,7 @@ class ItemsController extends Controller
         	"price" => $request->price,
         ]);
        
-       return response()->json(['message'=>"Product {$request->name} has been created", 'data'=>$item, 'code'=>201], 201);
+       return response()->json(['message'=>"Item {$request->name} has been created", 'data'=>$item, 'code'=>201], 201);
     }
 
     /**
@@ -103,7 +103,7 @@ class ItemsController extends Controller
         // edit
 		$item = Item::where('sku', '=', $sku)->limit(1)->first();
     	if(!$item) {
-    		return response()->json(['message'=>"Unable to find product by sku:{$sku}", 'code'=>404], 404);
+    		return response()->json(['message'=>"Unable to find item by sku:{$sku}", 'code'=>404], 404);
     	}        
     	    	
     	$validator = Validator::make($request->all(), [
@@ -124,7 +124,7 @@ class ItemsController extends Controller
         	"price" => $request->price,
         ]);
     	 
-    	return response()->json(['message'=>"Product sku:{$sku} has been updated", 'data'=>$item, 'code'=>200], 200);
+    	return response()->json(['message'=>"Item sku:{$sku} has been updated", 'data'=>$item, 'code'=>200], 200);
     }
 
     /**

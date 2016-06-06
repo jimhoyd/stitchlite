@@ -42,9 +42,9 @@ abstract class Sync implements SyncInterface {
 		// nomalize the data if it comes back linearly
 		$items = $this->nomalizeData($this->fetchData());
 	
-		// loop thru the products
+		// loop thru the items
 		foreach($items as $itemData) {
-			// store the product, if exist update
+			// store the item, if exist update
 			$item = $this->storeItem($itemData);
 			// loop thru the variants
 			if($item && $itemData['variants']) {
@@ -58,7 +58,7 @@ abstract class Sync implements SyncInterface {
 		return true;
 	}	
 	
-	// store product
+	// store item
 	private function storeItem($data) {
 		$data = $this->mapItemData($data);
 		

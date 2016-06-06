@@ -4,27 +4,27 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-        	<h4>Products</h4>
+        	<h4>Items</h4>
             <div class="panel panel-default">
-                <div class="panel-heading">Get a list of the products</div>
+                <div class="panel-heading">Get a list of the items</div>
                 <div class="panel-body">
-                    GET /api/v1/products
+                    GET /api/v1/items
                 </div>
-                <div class="panel-heading">Create product</div>
+                <div class="panel-heading">Create item</div>
                 <div class="panel-body">
-                    POST /api/v1/products
+                    POST /api/v1/items
                 </div>
-                <div class="panel-heading">Edit product</div>
+                <div class="panel-heading">Edit item</div>
                 <div class="panel-body">
-                    PATCH /api/v1/products/{sku}
+                    PATCH /api/v1/items/{sku}
                 </div>    
-                <div class="panel-heading">View product</div>
+                <div class="panel-heading">View item</div>
                 <div class="panel-body">
-                    GET /api/v1/products/{sku}
+                    GET /api/v1/items/{sku}
                 </div>
-                <div class="panel-heading">Delete product</div>
+                <div class="panel-heading">Delete item</div>
                 <div class="panel-body">
-                    DELETE /api/v1/products/{sku}
+                    DELETE /api/v1/items/{sku}
                 </div>                                               
             </div>        
         	<h4>Channels</h4>

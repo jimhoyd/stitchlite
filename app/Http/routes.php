@@ -35,7 +35,7 @@ Route::group(['middleware' => ['web']], function () {
 });
 
 Route::group(['prefix' => 'api/v1/'], function () {
-	Route::resource('products', 'ProductsController', ['except' => ['create', 'edit']]);
+	Route::resource('items', 'ItemsController', ['except' => ['create', 'edit']]);
 	
 	Route::resource('channels', 'ChannelsController', ['except' => ['create', 'edit']]);
 	
