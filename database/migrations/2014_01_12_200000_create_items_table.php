@@ -27,29 +27,7 @@ class CreateItemsTable extends Migration
 			// weight_units
             $table->timestamps();
         });
-
-        Schema::create('item_media', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('item_id')->unsigned()->index();
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
-            $table->string('uri', 1024);
-            $table->string('content_type', 60);
-			// file size
-			// original name
-			// read only
-            $table->timestamps();
-        });
-
-        Schema::create('item_attributes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('item_id')->unsigned()->index();
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
-            $table->string('key', 60);
-            $table->string('value', 60);
-            $table->string('type', 60);
-            $table->timestamps();
-        });
-
+        
         Schema::create('item_tags', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('item_id')->unsigned()->index();
@@ -68,27 +46,27 @@ class CreateItemsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('item_locations', function (Blueprint $table) {
+        Schema::create('item_media', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('item_id')->unsigned()->index();
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
-            $table->integer('location_id')->unsigned()->index();
-            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
-            $table->string('bin', 60);
-            $table->integer('quantity');			
+            $table->string('uri', 1024);
+            $table->string('content_type', 60);
+            // file size
+            // original name
+            // read only
             $table->timestamps();
         });
-		
-        Schema::create('item_vendors', function (Blueprint $table) {
+
+        Schema::create('item_attributes', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('item_id')->unsigned()->index();
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
-            $table->integer('vendor_id')->unsigned()->index();
-            $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
-            $table->float('price');
-            $table->integer('quantity');
-			$table->integer('ordered');
-			$table->integer('reorder');
+            $table->string('key', 60);
+            $table->string('value', 60);
+            $table->string('type', 60);
             $table->timestamps();
-        });		
+        });
 		
 		// transactions
 		// item customers
@@ -101,6 +79,10 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
+        Schema::drop('items_attributes');
+        Schema::drop('items_media');
+        Schema::drop('item_notes');
+        Schema::drop('items_tags');
         Schema::drop('items');
     }
 }
