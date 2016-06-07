@@ -36,9 +36,10 @@ Route::group(['middleware' => ['web']], function () {
 
 Route::group(['prefix' => 'api/v1/'], function () {
 	Route::resource('items', 'ItemsController', ['except' => ['create', 'edit']]);
-	
+	Route::resource('orders', 'OrdersController', ['except' => ['create', 'edit']]);
+	Route::resource('locations', 'LocationsController', ['except' => ['create', 'edit']]);
+	Route::resource('vendors', 'VendorsController', ['except' => ['create', 'edit']]);	
 	Route::resource('channels', 'ChannelsController', ['except' => ['create', 'edit']]);
-	
 	Route::get('sync', 'ChannelsController@sync');
 });
 	
